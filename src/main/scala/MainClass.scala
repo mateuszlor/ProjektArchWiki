@@ -34,14 +34,14 @@ object MainClass {
     browser.get("https://wiki.archlinux.org/index.php/Special:Random").location
   }
 
-  def prepareLinks(list : List[Option[String]]) : List[Option[String]] = {
+  def prepareLinks(list : List[Option[String]]) : List[String] = {
     val pat = new Regex("^/index.php/.*$")
     var l = new ListBuffer[Option[String]];
     list.foreach {
       case Some(x) =>  l +=  pat findFirstIn x
       case None => ""
     }
-    l.toList
+    l.toList.flatten
   }
 
   def checkValidLink(url : String) : Boolean = {
