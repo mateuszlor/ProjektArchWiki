@@ -7,6 +7,9 @@ import net.ruippeixotog.scalascraper.dsl.DSL._
 import net.ruippeixotog.scalascraper.dsl.DSL.Extract._
 import net.ruippeixotog.scalascraper.model.Element
 
+import scala.collection.mutable.ListBuffer
+import scala.util.matching.Regex
+
 object MainClass {
  def main(args: Array[String]){
     println("hello")
@@ -15,11 +18,13 @@ object MainClass {
 
 //    val o = new MTree("a" , Some(new MTree("b" )))
 //   print(o.getParents())
+
+   prepareLinks(getListOfLinks(getLinkToRandomPage())).foreach(println)
   }
 
-  def getListOfLinks(link : String) : List[Option[String]] = {
+  def getListOfLinks(url : String) : List[Option[String]] = {
     val browser = JsoupBrowser()
-    val doc = browser.get(link)
+    val doc = browser.get(url)
     val items: List[Element] = doc >> elementList("a")
     items.map(_ >?> attr("href")("a"))
   }
@@ -27,6 +32,16 @@ object MainClass {
   def getLinkToRandomPage() : String = {
     val browser = JsoupBrowser()
     browser.get("https://wiki.archlinux.org/index.php/Special:Random").location
+  }
+
+  def prepareLinks(list : List[Option[String]]) : List[Option[String]] = {
+    val pat = new Regex("^/index.php/.*$")
+    var l = new ListBuffer[Option[String]];
+    list.foreach {
+      case Some(x) =>  l +=  pat findFirstIn x
+      case None => ""
+    }
+    l.toList
   }
 
   def checkValidLink(url : String) : Boolean = {
