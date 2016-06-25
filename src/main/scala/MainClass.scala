@@ -46,18 +46,7 @@ object MainClass {
             tmpListOfUrl = prepareLinks(getListOfLinks(root.get.url))
           }
           catch { case e: Exception => print("BLAD")}
-      print()
-//        tmpList.toList.diff(currentLevel) ::: currentLevel.toList.diff(tmpList)
-//         tmpList.foreach{ x => if(x.url.equals(url2)) print(x.getParents()) ; exit = true ;}
-//        currentLevel :: tmpList.toList
-//          tmpList.clear()
-//
-//          root = Some(currentLevel.toList(licznik));
-//          tmpListOfUrl = prepareLinks(getListOfLinks(root.get.url))
-//
-//          licznik=licznik+1
         }
-
       }
   }
 
@@ -80,15 +69,15 @@ object MainClass {
   }
 
   def prepareLinks(list : List[Option[String]]) : List[String] = {
-    val pat = new Regex("^/index.php/.*$")
+    val pattern = new Regex("^/index.php/.*$")
     var l = new ListBuffer[Option[String]];
     list.foreach {
-      case Some(x) =>  l +=  pat findFirstIn x
+      case Some(x) =>  l +=  pattern findFirstIn x
       case None => ""
     }
-    val ww = new ListBuffer[String];
-    val pp = l.toList.flatten.foreach( x =>  ww+=("https://wiki.archlinux.org"+x))
-    ww.toList
+    val output = new ListBuffer[String];
+    l.toList.flatten.foreach( x =>  output+=("https://wiki.archlinux.org"+x))
+    output.toList
   }
 
   def checkValidLink(url : String) : Boolean = {
