@@ -14,12 +14,9 @@ import scala.util.matching.Regex
 object MainClass {
  def main(args: Array[String]){
     println("hello")
-//   println(getListOfLinks("https://wiki.archlinux.org/index.php/Secure_Boot#Put_firmware_in_.22Setup_Mode.22"))
-//   print(getLinkToRandomPage())
-//    val o = new MTree("a" , Some(new MTree("b" )))
-//   print(o.getParents())
+
+//    play("https://wiki.archlinux.org/index.php/Daemons_(%D0%A0%D1%83%D1%81%D1%81%D0%BA%D0%B8%D0%B9)", "https://wiki.archlinux.org/index.php/Category:Kernel")
     play(getLinkToRandomPage(), getLinkToRandomPage())
-//   prepareLinks(getListOfLinks(getLinkToRandomPage())).foreach(println)
   }
 
   def play( url1 :String , url2: String) = {
@@ -27,22 +24,38 @@ object MainClass {
       {
         var root = new Some(MTree(url1))
         var tmpListOfUrl = prepareLinks(getListOfLinks(root.get.url))
-        val currentLevel = new ListBuffer[MTree] ;
-        val tmpList = new ListBuffer[MTree] ;
+
+        var listaWszystkichTree = new ListBuffer[MTree]
+        var listaTMP = new ListBuffer[MTree]
+
         var exit = false
         var licznik = 0
         while(!exit){
-          println("petla")
-        tmpList :: createTreeListFromList( tmpListOfUrl,root)
-        tmpList.toList.diff(currentLevel) ::: currentLevel.toList.diff(tmpList)
-         tmpList.foreach{ x => if(x.url.equals(url2)) print(x.getParents()) ; exit = true ;}
-        currentLevel :: tmpList.toList
-          tmpList.clear()
+          println("petla, licznik="+licznik)
+          listaTMP ++=  createTreeListFromList( tmpListOfUrl,root)
+          listaTMP = listaTMP.distinct
 
-          root = Some(currentLevel.toList(licznik));
-          tmpListOfUrl = prepareLinks(getListOfLinks(root.get.url))
+          listaTMP.foreach{x => if(x.url.equals(url2)) {println("\t\t KONIEC") ; println(url2+"\t" +x.getParents()+"\t" +url1) ; exit = true} }
+          listaWszystkichTree ++= listaTMP
+          listaWszystkichTree = listaWszystkichTree.distinct
 
+          listaTMP.clear()
           licznik=licznik+1
+          root = Some(listaWszystkichTree.toList(licznik))
+          try {
+            tmpListOfUrl = prepareLinks(getListOfLinks(root.get.url))
+          }
+          catch { case e: Exception => print("BLAD")}
+      print()
+//        tmpList.toList.diff(currentLevel) ::: currentLevel.toList.diff(tmpList)
+//         tmpList.foreach{ x => if(x.url.equals(url2)) print(x.getParents()) ; exit = true ;}
+//        currentLevel :: tmpList.toList
+//          tmpList.clear()
+//
+//          root = Some(currentLevel.toList(licznik));
+//          tmpListOfUrl = prepareLinks(getListOfLinks(root.get.url))
+//
+//          licznik=licznik+1
         }
 
       }

@@ -7,7 +7,7 @@ case class MTree(url : String, parent: Option[MTree] = None){
 
   def getParents() : String = {
     parent match {
-      case Some(parent) => url + parent.getParents()
+      case Some(parent) => url +"\n"+ parent.getParents()
       case None =>  url
     }
   }
