@@ -18,21 +18,33 @@ object MainClass {
 //   print(getLinkToRandomPage())
 //    val o = new MTree("a" , Some(new MTree("b" )))
 //   print(o.getParents())
-
-   prepareLinks(getListOfLinks(getLinkToRandomPage())).foreach(println)
+    play(getLinkToRandomPage(), getLinkToRandomPage())
+//   prepareLinks(getListOfLinks(getLinkToRandomPage())).foreach(println)
   }
 
   def play( url1 :String , url2: String) = {
     if(!url1.equals(url2))
       {
-        val root  = new Some(MTree(url1))
-        val tmpListOfUrl = prepareLinks(getListOfLinks(root.get.url))
+        var root = new Some(MTree(url1))
+        var tmpListOfUrl = prepareLinks(getListOfLinks(root.get.url))
         val currentLevel = new ListBuffer[MTree] ;
         val tmpList = new ListBuffer[MTree] ;
+        var exit = false
+        var licznik = 0
+        while(!exit){
+          println("petla")
         tmpList :: createTreeListFromList( tmpListOfUrl,root)
-        tmpList.foreach{ x => if(x.equals(currentLevel)) x = None}
-        tmpList.foreach{ x => if(x.url.equals(url2)) print(x.getParents())}
+        tmpList.toList.diff(currentLevel) ::: currentLevel.toList.diff(tmpList)
+         tmpList.foreach{ x => if(x.url.equals(url2)) print(x.getParents()) ; exit = true ;}
         currentLevel :: tmpList.toList
+          tmpList.clear()
+
+          root = Some(currentLevel.toList(licznik));
+          tmpListOfUrl = prepareLinks(getListOfLinks(root.get.url))
+
+          licznik=licznik+1
+        }
+
       }
   }
 
