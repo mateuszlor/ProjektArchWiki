@@ -12,7 +12,9 @@ import scala.util.matching.Regex
 import javax.net.ssl._
 
 object MainClass {
-  
+
+ case class MainClass()
+
  def main(args: Array[String]){
     println("hello")
 
