@@ -1,6 +1,4 @@
-/**
-  * Created by marek on 24.06.16.
-  */
+package main.scala
 
 import net.ruippeixotog.scalascraper.browser.JsoupBrowser
 import net.ruippeixotog.scalascraper.dsl.DSL._
@@ -14,6 +12,7 @@ import scala.util.matching.Regex
 import javax.net.ssl._
 
 object MainClass {
+  
  def main(args: Array[String]){
     println("hello")
 
@@ -27,10 +26,12 @@ object MainClass {
     //end
 
 //    play("https://wiki.archlinux.org/index.php/Daemons_(%D0%A0%D1%83%D1%81%D1%81%D0%BA%D0%B8%D0%B9)", "https://wiki.archlinux.org/index.php/Category:Kernel")
-    play(getLinkToRandomPage(), getLinkToRandomPage())
+    //play(getLinkToRandomPage(), getLinkToRandomPage())
+    play("https://wiki.archlinux.org/index.php/OpenRC", "https://wiki.archlinux.org/index.php/Persistent_block_device_naming_(Espa%C3%B1ol)")
   }
 
-  def play( url1 :String , url2: String) = {
+  def play( url1 :String , url2: String) : List[String]  = {
+    var result = List(url2, url1)
     if(!url1.equals(url2))
       {
         var root = new Some(MTree(url1))
@@ -38,27 +39,39 @@ object MainClass {
 
         var listaWszystkichTree = new ListBuffer[MTree]
         var listaTMP = new ListBuffer[MTree]
-
+        
         var exit = false
         var licznik = 0
+
         while(!exit){
-          println("petla, licznik="+licznik)
-          listaTMP ++=  createTreeListFromList( tmpListOfUrl,root)
+          listaTMP ++=  createTreeListFromList(tmpListOfUrl, root)
           listaTMP = listaTMP.distinct
 
-          listaTMP.foreach{x => if(x.url.equals(url2)) {println("\t\t KONIEC") ; println(url2+"\t" +x.getParents()+"\t" +url1) ; exit = true} }
+          println("petla " + licznik + ", liczba stron = " + listaTMP.length)
+
+          listaTMP.foreach {
+            x => 
+            if(x.url.equals(url2)) {
+              println("\t\t KONIEC")
+              println(x.getParents())
+              exit = true
+            } 
+          }
           listaWszystkichTree ++= listaTMP
           listaWszystkichTree = listaWszystkichTree.distinct
 
           listaTMP.clear()
-          licznik=licznik+1
+          licznik = licznik + 1
           root = Some(listaWszystkichTree.toList(licznik))
           try {
             tmpListOfUrl = prepareLinks(getListOfLinks(root.get.url))
           }
-          catch { case e: Exception => print("BLAD")}
+          catch { 
+            case e: Exception => print("BLAD")
+          }
         }
       }
+      result
   }
 
   def getListOfLinks(url : String) : List[Option[String]] = {
@@ -77,20 +90,20 @@ object MainClass {
   def getLinkToRandomPage() : String = {
     val browser = JsoupBrowser()
     val url = browser.get("https://wiki.archlinux.org/index.php/Special:Random").location
-    println("Got random link: " url)
+    // println("Got random link: " url)
     url
   }
 
   def prepareLinks(list : List[Option[String]]) : List[String] = {
-    val pattern = new Regex("^/index.php/.*$")
+    val pat = new Regex("^/index.php/.*$")
     var l = new ListBuffer[Option[String]];
     list.foreach {
-      case Some(x) =>  l +=  pattern findFirstIn x
+      case Some(x) =>  l +=  pat findFirstIn x
       case None => ""
     }
-    val output = new ListBuffer[String];
-    l.toList.flatten.foreach( x =>  output+=("https://wiki.archlinux.org"+x))
-    output.toList
+    val ww = new ListBuffer[String];
+    val pp = l.toList.flatten.foreach( x =>  ww+=("https://wiki.archlinux.org"+x))
+    ww.toList
   }
 
   def checkValidLink(url : String) : Boolean = {
