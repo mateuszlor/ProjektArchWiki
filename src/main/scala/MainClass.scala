@@ -11,9 +11,20 @@ import scala.collection.immutable.List
 import scala.collection.mutable.ListBuffer
 import scala.util.matching.Regex
 
+import javax.net.ssl._
+
 object MainClass {
  def main(args: Array[String]){
     println("hello")
+
+    //Disable SSL
+    // SSL Context initialization and configuration
+    val sslContext = SSLContext.getInstance("SSL")
+    sslContext.init(null, Array(TrustAll), new java.security.SecureRandom())
+    HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.getSocketFactory)
+    HttpsURLConnection.setDefaultHostnameVerifier(VerifiesAllHostNames)
+
+    //end
 
 //    play("https://wiki.archlinux.org/index.php/Daemons_(%D0%A0%D1%83%D1%81%D1%81%D0%BA%D0%B8%D0%B9)", "https://wiki.archlinux.org/index.php/Category:Kernel")
     play(getLinkToRandomPage(), getLinkToRandomPage())
@@ -65,7 +76,9 @@ object MainClass {
 
   def getLinkToRandomPage() : String = {
     val browser = JsoupBrowser()
-    browser.get("https://wiki.archlinux.org/index.php/Special:Random").location
+    val url = browser.get("https://wiki.archlinux.org/index.php/Special:Random").location
+    println("Got random link: " url)
+    url
   }
 
   def prepareLinks(list : List[Option[String]]) : List[String] = {
