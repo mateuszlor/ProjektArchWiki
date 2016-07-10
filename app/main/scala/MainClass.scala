@@ -15,19 +15,18 @@ object MainClass {
 
  def main(args: Array[String]) = {
     println("hello")
+    fixSSL()
+    //play(getLinkToRandomPage(), getLinkToRandomPage())
+    play("https://wiki.archlinux.org/index.php/OpenRC", "https://wiki.archlinux.org/index.php/Persistent_block_device_naming_(Espa%C3%B1ol)")
+  }
 
+  def fixSSL() = {
     //Disable SSL
     // SSL Context initialization and configuration
     val sslContext = SSLContext.getInstance("SSL")
     sslContext.init(null, Array(TrustAll), new java.security.SecureRandom())
     HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.getSocketFactory)
     HttpsURLConnection.setDefaultHostnameVerifier(VerifiesAllHostNames)
-
-    //end
-
-//    play("https://wiki.archlinux.org/index.php/Daemons_(%D0%A0%D1%83%D1%81%D1%81%D0%BA%D0%B8%D0%B9)", "https://wiki.archlinux.org/index.php/Category:Kernel")
-    //play(getLinkToRandomPage(), getLinkToRandomPage())
-    play("https://wiki.archlinux.org/index.php/OpenRC", "https://wiki.archlinux.org/index.php/Persistent_block_device_naming_(Espa%C3%B1ol)")
   }
 
   def play( url1 :String , url2: String) : List[String]  = {
