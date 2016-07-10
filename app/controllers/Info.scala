@@ -1,6 +1,5 @@
 package controllers
 
-import play.api.libs.json._
 import play.api.mvc._
 object Info extends Controller {
 
@@ -21,9 +20,13 @@ object Info extends Controller {
                       </div>
                       <div widht="300px">
                         <pre>{
-  "first" = "https://wiki.archlinux.org/index.php/Special:Random"
-  "second" = "https://wiki.archlinux.org/index.php/Special:Random"
+  "first": "https://wiki.archlinux.org/index.php/Special:Random",
+  "second": "https://wiki.archlinux.org/index.php/Special:Random"
 }</pre>
+                      <div class="text-danger text-center">
+                        <br />
+                        <h4>Random lookup can take long time!</h4>
+                      </div>
                     </div>
                   </body>
                 </html>""" 

@@ -1,3 +1,5 @@
+package main.scala
+
 import scala.None
 
 /**
@@ -5,10 +7,10 @@ import scala.None
   */
 case class MTree(url : String, parent: Option[MTree] = None){
 
-  def getParents() : String = {
+  def getParents() : List[String] = {
     parent match {
-      case Some(parent) => url +"\n"+ parent.getParents()
-      case None =>  url
+      case Some(parent) => url :: parent.getParents()
+      case None =>  List(url)
     }
   }
 }

@@ -1,3 +1,5 @@
+package main.scala
+
 import javax.net.ssl._
 import java.security.cert.X509Certificate
 import scala.io.Source

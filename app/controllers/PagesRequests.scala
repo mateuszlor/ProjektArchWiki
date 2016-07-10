@@ -13,19 +13,14 @@ object PagesRequests extends Controller {
       errors => {
         BadRequest(Json.obj("status" -> "OK", "message" -> JsError.toFlatJson(errors)))
       },
-      book => {
-        // TODO app logic
-
-        var app = new MainClass()
-        app.play("https://wiki.archlinux.org/index.php/OpenRC", "https://wiki.archlinux.org/index.php/Persistent_block_device_naming_(Espa%C3%B1ol)")
-
-        // end logic
-
-        // To delete
-
-        val pagesList = List("strona 1", "strona 2", "strona 3")
-
-        val pages = Json.obj("pages" -> pagesList)
+      pages => {
+        val first = b.map(p=>p.first).get
+        val second = b.map(p=>p.second).get
+        println(first)
+        println(second)
+        //val result = MainClass.play("https://wiki.archlinux.org/index.php/OpenRC", "https://wiki.archlinux.org/index.php/Persistent_block_device_naming_(Espa%C3%B1ol)")
+        val result = MainClass.play(first,second)
+        val pages = Json.obj("pages" -> result)
 
         Ok(pages)
       }

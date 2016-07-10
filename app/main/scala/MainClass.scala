@@ -13,9 +13,7 @@ import javax.net.ssl._
 
 object MainClass {
 
- case class MainClass()
-
- def main(args: Array[String]){
+ def main(args: Array[String]) = {
     println("hello")
 
     //Disable SSL
@@ -33,10 +31,13 @@ object MainClass {
   }
 
   def play( url1 :String , url2: String) : List[String]  = {
-    var result = List(url2, url1)
-    if(!url1.equals(url2))
+    val browser = JsoupBrowser()
+    val first = browser.get(url1).location
+    val second = browser.get(url2).location
+    var result = List(first)
+    if(!first.equals(second))
       {
-        var root = new Some(MTree(url1))
+        var root = new Some(MTree(first))
         var tmpListOfUrl = prepareLinks(getListOfLinks(root.get.url))
 
         var listaWszystkichTree = new ListBuffer[MTree]
@@ -53,9 +54,10 @@ object MainClass {
 
           listaTMP.foreach {
             x => 
-            if(x.url.equals(url2)) {
+            if(x.url.equals(second)) {
               println("\t\t KONIEC")
-              println(x.getParents())
+              result = x.getParents()
+              println(result)
               exit = true
             } 
           }
